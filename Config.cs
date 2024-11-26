@@ -4,7 +4,7 @@ namespace far
 {
     public class Config
     {
-        private const string CONFIG_FILE = "far.json";
+        private const string CONFIG_FILE = @"%LOCALAPPDATA%\far\far.json";
         private static readonly JsonSerializerOptions _options = new JsonSerializerOptions
         {
             WriteIndented = true
@@ -16,9 +16,9 @@ namespace far
 
         public static Config Load()
         {
-            if (File.Exists(CONFIG_FILE))
+            if (File.Exists(Environment.ExpandEnvironmentVariables(CONFIG_FILE)))
             {
-                return JsonSerializer.Deserialize<Config>(File.ReadAllText(CONFIG_FILE));
+                return JsonSerializer.Deserialize<Config>(File.ReadAllText(Environment.ExpandEnvironmentVariables(CONFIG_FILE)));
             }
 
             return new Config();
@@ -26,7 +26,7 @@ namespace far
 
         public void Save()
         {
-            File.WriteAllText(CONFIG_FILE, JsonSerializer.Serialize(this, _options));
+            File.WriteAllText(Environment.ExpandEnvironmentVariables(CONFIG_FILE), JsonSerializer.Serialize(this, _options));
             Console.WriteLine("Config saved.");
         }
 
